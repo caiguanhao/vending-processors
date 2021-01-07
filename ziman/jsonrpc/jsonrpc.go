@@ -14,7 +14,6 @@ var (
 	ErrTimeout      = errors.New("timeout")
 	ErrProcessing   = errors.New("already processing")
 	ErrNoContent    = errors.New("no content")
-	ErrNoClientId   = errors.New("no client id")
 	ErrNoSuchClient = errors.New("no such client")
 )
 
