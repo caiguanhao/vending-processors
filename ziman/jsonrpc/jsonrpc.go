@@ -161,10 +161,6 @@ func (z *Ziman) write(clientId string, input []byte, channelKey string, timeout 
 		err = ErrNoContent
 		return
 	}
-	if clientId == "" {
-		err = ErrNoClientId
-		return
-	}
 	if z.Clients == nil {
 		err = ErrNoSuchClient
 		return
