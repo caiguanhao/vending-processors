@@ -21,7 +21,7 @@ const (
 	KEY_UNLOCK = "unlock"
 )
 
-func Process(channels *sync.Map, _data []byte) []byte {
+func Process(_data []byte, multiChannels ...*sync.Map) []byte {
 	// ziman replies
 	for i := 0; i < len(_data)-1; i++ {
 		if _data[i] != 0xa8 {
@@ -44,33 +44,41 @@ func Process(channels *sync.Map, _data []byte) []byte {
 		}
 		log.Println("received", data)
 		if data[2] == FUNC_STATUS && len(data) == 9 {
-			if channel, ok := channels.Load(KEY_STATUS); ok {
-				channel.(chan []byte) <- data
+			for _, channels := range multiChannels {
+				if channel, ok := channels.Load(KEY_STATUS); ok {
+					channel.(chan []byte) <- data
+				}
 			}
 		} else if data[2] == FUNC_CHECK && len(data) == 8 {
 			frame, row, column := int(data[3]), int(data[4]), int(data[5])
 			key := fmt.Sprintf("%s-%d-%d-%d", KEY_CHECK, frame, row, column)
-			if channel, ok := channels.LoadAndDelete(key); ok {
-				channel.(chan []byte) <- data
+			for _, channels := range multiChannels {
+				if channel, ok := channels.LoadAndDelete(key); ok {
+					channel.(chan []byte) <- data
+				}
 			}
 		} else if data[2] == FUNC_ROTATE && len(data) == 10 {
 			frame, row, column := int(data[3]), int(data[4]), int(data[5])
 			key := fmt.Sprintf("%s-%d-%d-%d", KEY_ROTATE, frame, row, column)
-			if channel, ok := channels.LoadAndDelete(key); ok {
-				channel.(chan []byte) <- data
-			} else {
-				if channel, ok := channels.Load(KEY_LOOKUP); ok {
+			for _, channels := range multiChannels {
+				if channel, ok := channels.LoadAndDelete(key); ok {
 					channel.(chan []byte) <- data
+				} else {
+					if channel, ok := channels.Load(KEY_LOOKUP); ok {
+						channel.(chan []byte) <- data
+					}
 				}
 			}
 		} else if data[2] == FUNC_UNLOCK && len(data) == 10 {
 			frame, row, column := int(data[3]), int(data[4]), int(data[5])
 			key := fmt.Sprintf("%s-%d-%d-%d", KEY_UNLOCK, frame, row, column)
-			if channel, ok := channels.LoadAndDelete(key); ok {
-				channel.(chan []byte) <- data
-			} else {
-				if channel, ok := channels.Load(KEY_LOOKUP); ok {
+			for _, channels := range multiChannels {
+				if channel, ok := channels.LoadAndDelete(key); ok {
 					channel.(chan []byte) <- data
+				} else {
+					if channel, ok := channels.Load(KEY_LOOKUP); ok {
+						channel.(chan []byte) <- data
+					}
 				}
 			}
 		}
