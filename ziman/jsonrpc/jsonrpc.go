@@ -190,7 +190,11 @@ func (z *Ziman) write(clientId string, input []byte, channelKey string, timeout 
 	}
 	var n int
 	n, err = client.Write(input)
-	log.Printf("%s %d bytes written: % X", clientId, n, input)
+	if clientId == "" {
+		log.Printf("%d bytes written: % X", n, input)
+	} else {
+		log.Printf("%s %d bytes written: % X", clientId, n, input)
+	}
 	if err == nil {
 		timeoutChan := newTimeoutChan(timeout)
 		for {
