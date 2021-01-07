@@ -99,7 +99,7 @@ func (z *Ziman) Check(args *CheckArgs, reply *CheckReply) error {
 		return err
 	}
 	*reply = CheckReply{
-		bytesToBasicReply(output[0]),
+		BytesToBasicReply(output[0]),
 	}
 	return nil
 }
@@ -112,7 +112,7 @@ func (z *Ziman) LookUp(args *LookUpArgs, reply *LookUpReply) error {
 	}
 	replies := []BasicReply{}
 	for _, item := range output {
-		replies = append(replies, bytesToBasicReply(item))
+		replies = append(replies, BytesToBasicReply(item))
 	}
 	*reply = LookUpReply{
 		replies,
@@ -126,7 +126,7 @@ func (z *Ziman) Status(args *StatusArgs, reply *StatusReply) error {
 	if err != nil {
 		return err
 	}
-	*reply = bytesToStatusReply(output[0])
+	*reply = BytesToStatusReply(output[0])
 	return nil
 }
 
@@ -138,7 +138,7 @@ func (z *Ziman) Rotate(args *RotateArgs, reply *RotateReply) error {
 		return err
 	}
 	*reply = RotateReply{
-		bytesToBasicReply(output[0]),
+		BytesToBasicReply(output[0]),
 	}
 	return nil
 }
@@ -151,7 +151,7 @@ func (z *Ziman) Unlock(args *UnlockArgs, reply *UnlockReply) error {
 		return err
 	}
 	*reply = UnlockReply{
-		bytesToBasicReply(output[0]),
+		BytesToBasicReply(output[0]),
 	}
 	return nil
 }
@@ -219,7 +219,7 @@ func (z *Ziman) write(clientId string, input []byte, channelKey string, timeout 
 	return
 }
 
-func bytesToBasicReply(input []byte) BasicReply {
+func BytesToBasicReply(input []byte) BasicReply {
 	success := true
 	if len(input) == 10 {
 		success = input[7] == 1
@@ -235,7 +235,7 @@ func bytesToBasicReply(input []byte) BasicReply {
 	}
 }
 
-func bytesToStatusReply(input []byte) StatusReply {
+func BytesToStatusReply(input []byte) StatusReply {
 	return StatusReply{
 		Time:                  time.Now(),
 		ExpectedTemperature:   int(input[4]),
