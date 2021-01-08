@@ -50,16 +50,19 @@ type (
 
 func (t *TCN) Check(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xDF, 0x55), 1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) MergeCell(args *MergeCellArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xCA, byte(args.Number)), 1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) UnmergeCell(args *MergeCellArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xC9, byte(args.Number)), 1000)
+	*reply = err == nil
 	return
 }
 
@@ -74,26 +77,31 @@ func (t *TCN) Rotate(args *RotateArgs, reply *bool) (err error) {
 
 func (t *TCN) RotateAll(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0x65, 0x55), 3*60*1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) TurnOnHeater(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xD4, 0x01), 1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) TurnOffHeater(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xD4, 0x00), 1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) TurnOnLights(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xDD, 0xAA), 1000)
+	*reply = err == nil
 	return
 }
 
 func (t *TCN) TurnOffLights(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xDD, 0x55), 1000)
+	*reply = err == nil
 	return
 }
 
@@ -110,6 +118,7 @@ func (t *TCN) TurnOnRefrigerator(args *TurnOnRefrigeratorArgs, reply *bool) (err
 
 func (t *TCN) TurnOffRefrigerator(args *BasicArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xCC, 0x00), 1000)
+	*reply = err == nil
 	return
 }
 
