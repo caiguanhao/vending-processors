@@ -46,6 +46,11 @@ type (
 		ClientID    string `json:"client_id"`
 		Temperature int    `json:"temperature"`
 	}
+
+	StatusReply struct {
+		Time              time.Time `json:"time"`
+		ActualTemperature int       `json:"actual_temperature"`
+	}
 )
 
 func (t *TCN) Check(args *BasicArgs, reply *bool) (err error) {
@@ -64,6 +69,18 @@ func (t *TCN) UnmergeCell(args *MergeCellArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xC9, byte(args.Number)), 1000)
 	*reply = err == nil
 	return
+}
+
+func (t *TCN) Status(args *BasicArgs, reply *StatusReply) error {
+	b, err := t.write(args.ClientID, t.bytes(0xDC, 0x55), 1000)
+	if err != nil {
+		return err
+	}
+	*reply = StatusReply{
+		Time:              time.Now(),
+		ActualTemperature: int(b[2]),
+	}
+	return nil
 }
 
 func (t *TCN) Rotate(args *RotateArgs, reply *bool) (err error) {
