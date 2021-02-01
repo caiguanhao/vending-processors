@@ -322,6 +322,7 @@ func (t *TCN) LifterCheckExistence(args *BasicArgs, reply *LifterExistenceReply)
 	return nil
 }
 
+// try this function in The Go Playground: https://play.golang.org/p/f_ZD-i5GsEy
 func (t *TCN) lifterBytes(function byte, data ...byte) (out []byte) {
 	fnd := append([]byte{function}, data...)
 	fnd = append(fnd, sum(data))
