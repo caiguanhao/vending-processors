@@ -34,7 +34,7 @@ type (
 		ClientID string `json:"client_id"`
 	}
 
-	MergeCellArgs struct {
+	CellArgs struct {
 		BasicArgs
 		Number int `json:"number"`
 	}
@@ -85,14 +85,38 @@ func (t *TCN) Check(args *BasicArgs, reply *bool) (err error) {
 	return
 }
 
-func (t *TCN) MergeCell(args *MergeCellArgs, reply *bool) (err error) {
+func (t *TCN) MergeCell(args *CellArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xCA, byte(args.Number)), tcn.KEY_DEFAULT, 1000)
 	*reply = err == nil
 	return
 }
 
-func (t *TCN) UnmergeCell(args *MergeCellArgs, reply *bool) (err error) {
+func (t *TCN) UnmergeCell(args *CellArgs, reply *bool) (err error) {
 	_, err = t.write(args.ClientID, t.bytes(0xC9, byte(args.Number)), tcn.KEY_DEFAULT, 1000)
+	*reply = err == nil
+	return
+}
+
+func (t *TCN) SetCellAsBelt(args *CellArgs, reply *bool) (err error) {
+	_, err = t.write(args.ClientID, t.bytes(0x68, byte(args.Number)), tcn.KEY_DEFAULT, 1000)
+	*reply = err == nil
+	return
+}
+
+func (t *TCN) SetCellAsSpring(args *CellArgs, reply *bool) (err error) {
+	_, err = t.write(args.ClientID, t.bytes(0x74, byte(args.Number)), tcn.KEY_DEFAULT, 1000)
+	*reply = err == nil
+	return
+}
+
+func (t *TCN) SetAllCellsAsBelt(args *BasicArgs, reply *bool) (err error) {
+	_, err = t.write(args.ClientID, t.bytes(0x76, 0x55), tcn.KEY_DEFAULT, 1000)
+	*reply = err == nil
+	return
+}
+
+func (t *TCN) SetAllCellsAsSpring(args *BasicArgs, reply *bool) (err error) {
+	_, err = t.write(args.ClientID, t.bytes(0x75, 0x55), tcn.KEY_DEFAULT, 1000)
 	*reply = err == nil
 	return
 }
